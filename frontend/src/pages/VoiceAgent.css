@@ -1,0 +1,1080 @@
+/* =========================================
+   AOZENE VOICE AGENT
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.va-page {
+  min-height: 100vh;
+  width: 100%;
+  padding: 28px;
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(255, 226, 214, 0.55),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(235, 225, 255, 0.5),
+      transparent 30%
+    ),
+    #f6f9ff;
+
+  color: #172554;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================
+   MAIN GRID
+   ========================================= */
+
+.va-grid {
+  width: min(1450px, 100%);
+  height: 700px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(400px, 0.95fr);
+
+  gap: 22px;
+}
+
+
+/* =========================================
+   LEFT VOICE PANEL
+   ========================================= */
+
+.va-panel {
+  width: 100%;
+  height: 700px;
+  min-height: 0;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 48px 52px 36px;
+
+  border: 1px solid rgba(91, 72, 61, 0.1);
+
+  border-radius: 30px;
+
+  background: rgba(255, 253, 250, 0.94);
+
+  box-shadow:
+    0 18px 55px rgba(70, 54, 45, 0.08),
+    0 3px 12px rgba(70, 54, 45, 0.04);
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   HEADING
+   ========================================= */
+
+.va-heading {
+  margin: 0;
+
+  font-size: clamp(36px, 4vw, 56px);
+
+  line-height: 1.05;
+
+  letter-spacing: -0.045em;
+
+  font-weight: 700;
+
+  color: #172554;
+}
+
+
+.va-subheading {
+  max-width: 600px;
+
+  margin: 16px 0 0;
+
+  font-size: 16px;
+
+  line-height: 1.65;
+
+  color: #64748b;
+}
+
+
+/* =========================================
+   VOICE ORB AREA
+   ========================================= */
+
+.va-orb-wrap {
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px 0;
+}
+
+
+/* =========================================
+   VOICE ORB
+   ========================================= */
+
+.va-orb {
+  width: 178px;
+  height: 178px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #f3f8ff 0%,
+      #c9dcff 35%,
+      #91b5f8 70%,
+      #3978f6 100%
+    );
+
+  border: 1px solid rgba(120, 83, 67, 0.14);
+
+  box-shadow:
+    0 20px 45px rgba(151, 111, 93, 0.2),
+    inset 0 2px 12px rgba(255, 255, 255, 0.8);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+
+/* =========================================
+   LISTENING ANIMATION
+   ========================================= */
+
+.va-orb--active {
+  animation: va-orb-breathe 2.2s ease-in-out infinite;
+
+  box-shadow:
+    0 0 0 12px rgba(220, 183, 164, 0.08),
+    0 0 0 26px rgba(220, 183, 164, 0.045),
+    0 22px 55px rgba(151, 111, 93, 0.25),
+    inset 0 2px 12px rgba(255, 255, 255, 0.8);
+}
+
+
+/* =========================================
+   SPEAKING ANIMATION
+   ========================================= */
+
+.va-orb--speaking {
+  animation:
+    va-orb-speaking 0.8s ease-in-out infinite alternate;
+}
+
+
+@keyframes va-orb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+
+@keyframes va-orb-speaking {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.075);
+  }
+}
+
+
+/* =========================================
+   ORB STATUS
+   ========================================= */
+
+.va-orb-state {
+  margin: 18px 0 0;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  color: #8a7770;
+}
+
+
+/* =========================================
+   START / STOP CONTROLS
+   ========================================= */
+
+.va-controls {
+  flex-shrink: 0;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 5px;
+}
+
+
+.va-btn {
+  min-width: 150px;
+
+  height: 48px;
+
+  padding: 0 22px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.va-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+
+.va-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+.va-btn:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.45;
+}
+
+
+/* Start button */
+
+.va-btn--primary {
+  color: #ffffff;
+
+  background: #3978f6;
+
+  box-shadow:
+    0 8px 20px rgba(155, 111, 93, 0.22);
+}
+
+
+.va-btn--primary:hover:not(:disabled) {
+  box-shadow:
+    0 12px 28px rgba(155, 111, 93, 0.3);
+}
+
+
+/* Stop button */
+
+.va-btn--danger {
+  color: #315a9f;
+
+  background: #eaf2ff;
+
+  border: 1px solid rgba(155, 111, 93, 0.12);
+}
+
+
+.va-btn--danger:hover:not(:disabled) {
+  background: #dce9ff;
+}
+
+
+/* =========================================
+   ERROR
+   ========================================= */
+
+.va-error {
+  max-width: 520px;
+
+  margin: 14px auto 0;
+
+  padding: 10px 14px;
+
+  border-radius: 10px;
+
+  background: #fff0f4;
+
+  color: #c43d68;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   SUGGESTIONS
+   ========================================= */
+
+.va-suggestions {
+  flex-shrink: 0;
+
+  margin-top: 28px;
+
+  padding-top: 20px;
+
+  border-top:
+    1px solid rgba(91, 72, 61, 0.09);
+}
+
+
+.va-suggestions-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 13px;
+}
+
+
+.va-suggestions__label {
+  margin: 0;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+
+  color: #9a8c84;
+}
+
+
+.va-suggestions__hint {
+  font-size: 11px;
+
+  font-weight: 500;
+
+  color: #b0a39c;
+}
+
+
+/* =========================================
+   SUGGESTION CHIPS
+   ========================================= */
+
+.va-chips {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+
+.va-chip {
+  width: 100%;
+
+  min-height: 44px;
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 10px 14px;
+
+  border:
+    1px solid rgba(91, 72, 61, 0.1);
+
+  border-radius: 13px;
+
+  background: #f4f8ff;
+
+  color: #526789;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  line-height: 1.35;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.va-chip:hover {
+  transform: translateY(-1px);
+
+  background: #e9f1ff;
+
+  border-color:
+    rgba(155, 111, 93, 0.2);
+
+  box-shadow:
+    0 5px 14px rgba(70, 54, 45, 0.05);
+}
+
+
+.va-chip:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   RIGHT CONVERSATION PANEL
+   ========================================= */
+
+.va-transcript-wrap {
+  width: 100%;
+
+  height: 700px;
+
+  min-height: 0;
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(91, 72, 61, 0.1);
+
+  border-radius: 30px;
+
+  background:
+    rgba(255, 253, 250, 0.95);
+
+  box-shadow:
+    0 18px 55px rgba(70, 54, 45, 0.08),
+    0 3px 12px rgba(70, 54, 45, 0.04);
+}
+
+
+/* =========================================
+   CONVERSATION HEADER
+   ========================================= */
+
+.va-transcript-header {
+  flex-shrink: 0;
+
+  min-height: 76px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 18px 26px;
+
+  border-bottom:
+    1px solid rgba(91, 72, 61, 0.09);
+}
+
+
+.va-transcript-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.va-transcript-header__label {
+  font-size: 15px;
+
+  font-weight: 700;
+
+  color: #1e2f57;
+}
+
+
+/* =========================================
+   LIVE / READY STATUS
+   ========================================= */
+
+.va-transcript-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: #eef4ff;
+
+  color: #647da8;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================
+   CLEAR CONVERSATION
+   ========================================= */
+
+.va-clear-btn {
+  padding: 7px 11px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #4773d7;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.va-clear-btn:hover:not(:disabled) {
+  background: #e7efff;
+
+  color: #315aa8;
+}
+
+
+.va-clear-btn:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   CHAT / TRANSCRIPT
+   ========================================= */
+
+.va-transcript {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  padding: 26px;
+
+  scroll-behavior: smooth;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    #c2d4f2
+    transparent;
+}
+
+
+/* Chrome / Edge scrollbar */
+
+.va-transcript::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.va-transcript::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.va-transcript::-webkit-scrollbar-thumb {
+  background: #c2d4f2;
+
+  border-radius: 999px;
+}
+
+
+.va-transcript::-webkit-scrollbar-thumb:hover {
+  background: #9eb8e8;
+}
+
+
+/* =========================================
+   EMPTY CHAT STATE
+   ========================================= */
+
+.va-transcript-empty {
+  width: 100%;
+
+  min-height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+
+.va-transcript-empty-icon {
+  width: 48px;
+
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 14px;
+
+  border-radius: 50%;
+
+  background: #e9f1ff;
+
+  font-size: 20px;
+}
+
+
+.va-transcript__empty {
+  margin: 0;
+
+  color: #7b8ca8;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+
+.va-transcript-empty-hint {
+  margin-top: 6px;
+
+  color: #9aa9bf;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   MESSAGE ROW
+   ========================================= */
+
+.va-msg-row {
+  display: flex;
+
+  justify-content: flex-start;
+
+  margin-bottom: 18px;
+}
+
+
+.va-msg-row--user {
+  justify-content: flex-end;
+}
+
+
+/* =========================================
+   MESSAGE BUBBLE
+   ========================================= */
+
+.va-bubble {
+  max-width: min(78%, 600px);
+
+  padding: 14px 17px;
+
+  border-radius:
+    18px 18px 18px 5px;
+
+  background: #eef4ff;
+
+  color: #33486f;
+
+  font-size: 14px;
+
+  line-height: 1.55;
+
+  box-shadow:
+    0 3px 10px rgba(70, 54, 45, 0.035);
+
+  overflow-wrap: anywhere;
+}
+
+
+.va-bubble--user {
+  border-radius:
+    18px 18px 5px 18px;
+
+  background: #3978f6;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 7px 18px rgba(155, 111, 93, 0.16);
+}
+
+
+.va-bubble__label {
+  margin: 0 0 5px;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  opacity: 0.65;
+}
+
+
+.va-bubble__text {
+  margin: 0;
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 1100px) {
+
+  .va-page {
+    padding: 20px;
+  }
+
+  .va-grid {
+    width: 100%;
+
+    height: auto;
+
+    min-height: 0;
+
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .va-panel {
+    height: 700px;
+  }
+
+  .va-transcript-wrap {
+    height: 700px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 640px) {
+
+  .va-page {
+    padding: 12px;
+  }
+
+  .va-grid {
+    gap: 14px;
+  }
+
+  .va-panel {
+    height: auto;
+
+    min-height: 650px;
+
+    padding:
+      30px 22px 24px;
+
+    border-radius: 22px;
+  }
+
+  .va-heading {
+    font-size: 36px;
+  }
+
+  .va-subheading {
+    font-size: 14px;
+  }
+
+  .va-orb-wrap {
+    min-height: 240px;
+
+    padding: 20px 0;
+  }
+
+  .va-orb {
+    width: 145px;
+
+    height: 145px;
+  }
+
+  .va-controls {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .va-btn {
+    width: 100%;
+  }
+
+  .va-suggestions {
+    margin-top: 24px;
+  }
+
+  .va-chips {
+    grid-template-columns: 1fr;
+  }
+
+  .va-transcript-wrap {
+    height: 600px;
+
+    min-height: 600px;
+
+    border-radius: 22px;
+  }
+
+  .va-transcript-header {
+    padding: 18px;
+  }
+
+  .va-transcript {
+    padding: 18px;
+  }
+
+  .va-bubble {
+    max-width: 88%;
+
+    font-size: 13px;
+  }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .va-orb {
+    animation: none;
+  }
+
+  .va-btn,
+  .va-chip,
+  .va-clear-btn {
+    transition: none;
+  }
+
+  .va-transcript {
+    scroll-behavior: auto;
+  }
+}
+
+/* =========================================================
+   AOZENE COVER THEME — BLUE / CYAN / VIOLET
+   Visual-only theme layer. Layout and behavior preserved.
+   ========================================================= */
+
+.va-page {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(99, 201, 245, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 12%, rgba(139, 112, 255, 0.16), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(57, 120, 246, 0.08), transparent 36%),
+    #f6f9ff;
+  color: #172554;
+}
+
+.va-panel,
+.va-transcript-wrap {
+  border-color: rgba(71, 125, 242, 0.14);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 18px 55px rgba(48, 87, 160, 0.09),
+    0 3px 12px rgba(57, 120, 246, 0.045);
+}
+
+.va-orb {
+  background:
+    radial-gradient(circle at 35% 30%, #ffffff 0%, #d9f4ff 20%, #63c9f5 45%, #477df2 72%, #8b63e8 100%);
+  border-color: rgba(71, 125, 242, 0.24);
+  box-shadow:
+    0 20px 45px rgba(57, 120, 246, 0.25),
+    0 0 35px rgba(99, 201, 245, 0.16),
+    inset 0 2px 12px rgba(255, 255, 255, 0.9);
+}
+
+.va-orb--active {
+  box-shadow:
+    0 0 0 12px rgba(99, 201, 245, 0.09),
+    0 0 0 26px rgba(139, 112, 255, 0.055),
+    0 22px 55px rgba(57, 120, 246, 0.30),
+    inset 0 2px 12px rgba(255, 255, 255, 0.9);
+}
+
+.va-btn--primary {
+  background: linear-gradient(135deg, #3978f6, #5969e8);
+  box-shadow: 0 8px 20px rgba(57, 120, 246, 0.24);
+}
+
+.va-btn--primary:hover:not(:disabled) {
+  box-shadow: 0 12px 28px rgba(57, 120, 246, 0.34);
+}
+
+.va-btn--danger {
+  color: #315a9f;
+  background: #eaf2ff;
+  border-color: rgba(71, 125, 242, 0.16);
+}
+
+.va-btn--danger:hover:not(:disabled) {
+  background: #dce9ff;
+}
+
+.va-suggestions {
+  border-top-color: rgba(71, 125, 242, 0.12);
+}
+
+.va-suggestions__label {
+  color: #5973a5;
+}
+
+.va-suggestions__hint {
+  color: #93a3bc;
+}
+
+.va-chip {
+  border-color: rgba(71, 125, 242, 0.13);
+  background: #f4f8ff;
+  color: #526789;
+}
+
+.va-chip:hover {
+  background: #e9f1ff;
+  border-color: rgba(57, 120, 246, 0.24);
+  box-shadow: 0 5px 14px rgba(48, 87, 160, 0.07);
+}
+
+.va-transcript-header {
+  border-bottom-color: rgba(71, 125, 242, 0.10);
+}
+
+.va-transcript-status {
+  background: #eef4ff;
+  color: #5872a4;
+}
+
+.va-clear-btn {
+  color: #4773d7;
+}
+
+.va-clear-btn:hover:not(:disabled) {
+  background: #e7efff;
+  color: #315aa8;
+}
+
+.va-transcript {
+  scrollbar-color: #c2d4f2 transparent;
+}
+
+.va-transcript::-webkit-scrollbar-thumb {
+  background: #c2d4f2;
+}
+
+.va-transcript::-webkit-scrollbar-thumb:hover {
+  background: #9eb8e8;
+}
+
+.va-transcript-empty-icon {
+  background: linear-gradient(135deg, #e8f5ff, #f0ecff);
+}
+
+.va-bubble {
+  background: #eef4ff;
+  color: #33486f;
+  box-shadow: 0 3px 10px rgba(48, 87, 160, 0.04);
+}
+
+.va-bubble--user {
+  background: linear-gradient(135deg, #3978f6, #5969e8);
+  box-shadow: 0 7px 18px rgba(57, 120, 246, 0.20);
+}
