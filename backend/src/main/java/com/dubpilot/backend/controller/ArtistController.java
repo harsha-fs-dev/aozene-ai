@@ -33,7 +33,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/artists")
-@CrossOrigin(origins = {"http://localhost:5173", "https://aozene-ai.vercel.app", "https://aozene-oktxti0i7-harsha-d199.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:5173", "https://aozene-ai.vercel.app", "https://aozene-oktxti0i7-harsha-d199.vercel.app", "https://aozene-pt8vv9zy3-harsha-d199.vercel.app"})
 public class ArtistController {
 
     private final ArtistRepository artistRepository;
