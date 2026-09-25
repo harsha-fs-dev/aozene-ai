@@ -66,37 +66,6 @@ Rules you must always follow:
 
 const GREETING = "Hi, I'm Aozene. Ask me for today's production briefing whenever you're ready.";
 
-function getSessionContext() {
-  try {
-    const raw = sessionStorage.getItem(CONVERSATION_STORAGE_KEY);
-
-    if (!raw) return "";
-
-    const parsed = JSON.parse(raw);
-
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      return "";
-    }
-
-    const recent = parsed
-      .slice(-20)
-      .map((entry) => `${entry.speaker}: ${entry.text}`)
-      .join("\n");
-
-    return `
-      Previous conversation context:
-      ${recent}
-
-      Continue naturally from this previous conversation.
-      Do not greet the manager again as if this is the first conversation.
-      Treat the previous conversation as context only.
-      For current database information, always use the appropriate backend tool.
-      `;
-        } catch (err) {
-          return "";
-        }
-}
-
 const TOOLS = [
   {
     type: "function",
