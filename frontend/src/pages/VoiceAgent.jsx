@@ -66,6 +66,37 @@ Rules you must always follow:
 
 const GREETING = "Hi, I'm Aozene. Ask me for today's production briefing whenever you're ready.";
 
+function getSessionContext() {
+  try {
+    const raw = sessionStorage.getItem(CONVERSATION_STORAGE_KEY);
+
+    if (!raw) return "";
+
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return "";
+    }
+
+    const recent = parsed
+      .slice(-20)
+      .map((entry) => `${entry.speaker}: ${entry.text}`)
+      .join("\n");
+
+    return `
+      Previous conversation context:
+      ${recent}
+
+      Continue naturally from this previous conversation.
+      Do not greet the manager again as if this is the first conversation.
+      Treat the previous conversation as context only.
+      For current database information, always use the appropriate backend tool.
+      `;
+        } catch (err) {
+          return "";
+        }
+}
+
 const TOOLS = [
   {
     type: "function",
@@ -403,6 +434,37 @@ const STATE_TEXT = {
 
 
 const CONVERSATION_STORAGE_KEY = "Aozene_voice_conversation";
+
+function getSessionContext() {
+  try {
+    const raw = sessionStorage.getItem(CONVERSATION_STORAGE_KEY);
+
+    if (!raw) return "";
+
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return "";
+    }
+
+    const recent = parsed
+      .slice(-20)
+      .map((entry) => `${entry.speaker}: ${entry.text}`)
+      .join("\n");
+
+    return `
+    Previous conversation context:
+    ${recent}
+
+    Continue naturally from this previous conversation.
+    Do not greet the manager again as if this is the first conversation.
+    Treat the previous conversation as context only.
+    For current database information, always use the appropriate backend tool.
+    `;
+      } catch (err) {
+        return "";
+      }
+}
 
 function loadStoredTranscript() {
   try {
@@ -820,10 +882,24 @@ function VoiceAgent() {
       wsRef.current = ws;
 
       ws.addEventListener("open", () => {
+        const storedContext = getSessionContext();
+        const hasPreviousConversation = Boolean(storedContext);
+
+        const session = {
+          system_prompt: `${SYSTEM_PROMPT}${storedContext}`,
+          output: { voice: "anna" },
+          tools: TOOLS,
+        };
+
+        // Only give the normal greeting for a brand-new conversation.
+        if (!hasPreviousConversation) {
+          session.greeting = GREETING;
+        }
+
         ws.send(
           JSON.stringify({
             type: "session.update",
-            session: { system_prompt: SYSTEM_PROMPT, greeting: GREETING, output: { voice: "anna" }, tools: TOOLS },
+            session,
           })
         );
       });
