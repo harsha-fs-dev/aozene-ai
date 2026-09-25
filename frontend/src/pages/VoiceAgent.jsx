@@ -396,13 +396,13 @@ const STATE_TEXT = {
   idle: "Ready to listen",
   connecting: "Connecting…",
   ready: "Listening…",
-  speaking: "DubPilot is responding…",
+  speaking: "Aozene is responding…",
   error: "Connection error",
   ended: "Convo ended",
 };
 
 
-const CONVERSATION_STORAGE_KEY = "dubpilot_voice_conversation";
+const CONVERSATION_STORAGE_KEY = "Aozene_voice_conversation";
 
 function loadStoredTranscript() {
   try {
@@ -743,12 +743,23 @@ function VoiceAgent() {
         appendTranscript("You", msg.text);
         break;
       case "transcript.agent":
-        appendTranscript("DubPilot", msg.text);
+        appendTranscript("Aozene", msg.text);
         break;
       case "tool.call": {
         const result = await executeTool(msg.name, msg.arguments || {});
-        pendingToolsRef.current.push({ call_id: msg.call_id, result });
+
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+          wsRef.current.send(
+            JSON.stringify({
+              type: "tool.result",
+              call_id: msg.call_id,
+              result: JSON.stringify(result),
+            })
+          );
+        }
+
         break;
+
       }
       case "session.error":
       case "error":
