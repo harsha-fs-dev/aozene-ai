@@ -457,31 +457,62 @@ function VoiceAgent() {
     }
   };
 
-  const playAgentAudio = (base64Pcm) => {
+  const playAgentAudio = async (base64Pcm) => {
+  try {
     const audioCtx = audioCtxRef.current;
-    if (!audioCtx) return;
+
+    if (!audioCtx) {
+      console.error("AudioContext is not available");
+      return;
+    }
+
+    // Make sure the browser has actually started the audio context.
+    if (audioCtx.state === "suspended") {
+      await audioCtx.resume();
+    }
 
     const raw = atob(base64Pcm);
     const pcm16 = new Int16Array(raw.length / 2);
+
     for (let i = 0; i < pcm16.length; i++) {
-      pcm16[i] = raw.charCodeAt(i * 2) | (raw.charCodeAt(i * 2 + 1) << 8);
+      pcm16[i] =
+        raw.charCodeAt(i * 2) |
+        (raw.charCodeAt(i * 2 + 1) << 8);
     }
+
     const float32 = new Float32Array(pcm16.length);
+
     for (let i = 0; i < pcm16.length; i++) {
       float32[i] = pcm16[i] / 32768;
     }
 
-    const buffer = audioCtx.createBuffer(1, float32.length, 24000);
+    const buffer = audioCtx.createBuffer(
+      1,
+      float32.length,
+      24000
+    );
+
     buffer.getChannelData(0).set(float32);
-    const src = audioCtx.createBufferSource();
-    src.buffer = buffer;
-    src.connect(audioCtx.destination);
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioCtx.destination);
 
     const now = audioCtx.currentTime;
-    playbackTimeRef.current = Math.max(playbackTimeRef.current, now);
-    src.start(playbackTimeRef.current);
+
+    if (playbackTimeRef.current < now) {
+      playbackTimeRef.current = now;
+    }
+
+    source.start(playbackTimeRef.current);
+
     playbackTimeRef.current += buffer.duration;
-  };
+
+    console.log("AOZENE audio playing:", buffer.duration, "seconds");
+  } catch (error) {
+    console.error("AOZENE audio playback error:", error);
+  }
+};
 
   const executeTool = async (name, args) => {
     try {
@@ -575,7 +606,7 @@ function VoiceAgent() {
             sessionDate,
             startTime,
             endTime,
-            notes: "Requested via DubPilot voice agent - awaiting artist confirmation.",
+            notes: "Requested via Aozene voice agent - awaiting artist confirmation.",
           };
 
           const response = await axiosClient.post("/sessions", body);
@@ -753,6 +784,7 @@ function VoiceAgent() {
 
       const audioCtx = new AudioContext({ sampleRate: 24000 });
       audioCtxRef.current = audioCtx;
+      await audioCtx.resume();
       await audioCtx.audioWorklet.addModule("/pcm-processor.js");
 
       const stream = await navigator.mediaDevices.getUserMedia({
